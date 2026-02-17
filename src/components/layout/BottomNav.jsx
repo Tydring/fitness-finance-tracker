@@ -1,11 +1,12 @@
 import { NavLink } from 'react-router-dom';
-import { Dumbbell, Wallet, LayoutDashboard } from 'lucide-react';
+import { Dumbbell, Wallet, LayoutDashboard, BarChart3 } from 'lucide-react';
 
 const BottomNav = () => {
     const navItems = [
         { path: '/workouts', icon: Dumbbell, label: 'Workouts' },
         { path: '/expenses', icon: Wallet, label: 'Expenses' },
-        { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' }
+        { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+        { path: '/insights', icon: BarChart3, label: 'Insights' }
     ];
 
     return (
