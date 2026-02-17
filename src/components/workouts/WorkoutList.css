@@ -1,0 +1,172 @@
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.page-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.btn-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.loading-text {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    text-align: center;
+}
+
+.empty-icon {
+    color: var(--text-muted);
+    opacity: 0.4;
+    margin-bottom: 1rem;
+}
+
+.empty-hint {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.workout-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.workout-card {
+    padding: 1rem;
+    transition: transform 0.15s ease;
+}
+
+.workout-card:active {
+    transform: scale(0.98);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-exercise {
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+.card-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.sync-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.sync-synced {
+    background: var(--success);
+}
+
+.sync-pending {
+    background: var(--warning);
+}
+
+.sync-conflict {
+    background: var(--danger);
+}
+
+.card-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.rpe {
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.rpe-easy {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+}
+
+.rpe-mod {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+}
+
+.rpe-hard {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+.card-notes {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0 0 0.5rem 0;
+    font-style: italic;
+}
+
+.card-category {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.1);
+    color: #a5b4fc;
+    margin-bottom: 0.5rem;
+}
+
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.btn-danger {
+    color: var(--danger) !important;
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.1) !important;
+}
