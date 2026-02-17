@@ -4,6 +4,7 @@ import { useWorkouts, useTransactions } from '../../hooks/useFirestore';
 import { toDate } from '../../utils/dateHelpers';
 import { startOfWeek, endOfWeek, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 import { Dumbbell, Wallet, TrendingUp, ArrowRight } from 'lucide-react';
+import ExchangeRateWidget from './ExchangeRateWidget';
 import './OverviewDashboard.css';
 
 const OverviewDashboard = () => {
@@ -46,6 +47,8 @@ const OverviewDashboard = () => {
     return (
         <div className="page-container">
             <h2 className="dashboard-title">Dashboard</h2>
+
+            <ExchangeRateWidget />
 
             {loading && <div className="loading-text">Loading...</div>}
 

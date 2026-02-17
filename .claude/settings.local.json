@@ -8,7 +8,12 @@
       "Bash(git push:*)",
       "Bash(ls:*)",
       "Bash(npm install:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(git pull:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(curl:*)",
+      "Bash(firebase functions:log:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }
