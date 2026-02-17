@@ -13,7 +13,7 @@ import {
     serverTimestamp,
     Timestamp
 } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db, auth } from '../config/firebase';
 
 /**
  * Generic Firestore hook for CRUD operations on a collection.
@@ -51,8 +51,11 @@ export const useFirestoreCollection = (collectionName, queryConstraints = [], ma
 
     const addItem = useCallback(async (item) => {
         const colRef = collection(db, collectionName);
+        const uid = auth.currentUser?.uid;
+        if (!uid) throw new Error('Not authenticated');
         const docData = {
             ...item,
+            userId: uid,
             source: 'app',
             sync_status: 'pending',
             notion_page_id: null,
@@ -84,22 +87,26 @@ export const useFirestoreCollection = (collectionName, queryConstraints = [], ma
 
 /**
  * Hook specifically for workouts with date-ordered query.
+ * Filters by current user's userId.
  */
 export const useWorkouts = (maxItems = 50) => {
+    const uid = auth.currentUser?.uid;
     return useFirestoreCollection(
         'workouts',
-        [orderBy('date', 'desc')],
+        uid ? [where('userId', '==', uid), orderBy('date', 'desc')] : [orderBy('date', 'desc')],
         maxItems
     );
 };
 
 /**
  * Hook specifically for transactions with date-ordered query.
+ * Filters by current user's userId.
  */
 export const useTransactions = (maxItems = 50) => {
+    const uid = auth.currentUser?.uid;
     return useFirestoreCollection(
         'transactions',
-        [orderBy('date', 'desc')],
+        uid ? [where('userId', '==', uid), orderBy('date', 'desc')] : [orderBy('date', 'desc')],
         maxItems
     );
 };

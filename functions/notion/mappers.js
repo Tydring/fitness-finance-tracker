@@ -37,39 +37,47 @@ function richText(value) {
 
 /**
  * Maps a Firestore workout document to Notion page properties.
+ * Only includes properties that have values to avoid Notion validation errors
+ * for properties that don't exist in the target database.
  */
 export function mapWorkoutToNotion(firestoreId, data) {
   const name = data.name || `${data.exercise || 'Workout'} - ${toISODate(data.date)}`;
-  return {
-    'Name':           { title: [{ type: 'text', text: { content: name } }] },
-    'Date':           { date: { start: toISODate(data.date) } },
-    'Exercise':       select(data.exercise),
-    'Category':       select(data.category),
-    'Sets':           num(data.sets),
-    'Reps':           num(data.reps),
-    'Weight (kg)':    num(data.weight_kg),
-    'Duration (min)': num(data.duration_min),
-    'Distance (km)':  num(data.distance_km),
-    'RPE':            num(data.rpe),
-    'Notes':          richText(data.notes),
-    'Source':         select(data.source || 'app'),
-    'Firestore ID':   richText(firestoreId),
+  const props = {
+    'Title': { title: [{ type: 'text', text: { content: name } }] },
+    'Date': { date: { start: toISODate(data.date) } },
   };
+
+  // Only add optional properties if they have values
+  if (data.exercise) props['Exercise'] = select(data.exercise);
+  if (data.category) props['Category'] = select(data.category);
+  if (data.sets != null) props['Sets'] = num(data.sets);
+  if (data.reps != null) props['Reps'] = num(data.reps);
+  if (data.weight_kg != null) props['Weight'] = num(data.weight_kg);
+  if (data.duration_min != null) props['Duration'] = num(data.duration_min);
+  if (data.distance_km != null) props['Distance (km)'] = num(data.distance_km);
+  if (data.notes) props['Notes'] = richText(data.notes);
+  if (data.source) props['Source'] = select(data.source);
+
+  return props;
 }
 
 /**
  * Maps a Firestore transaction document to Notion page properties.
+ * Only includes properties that have values.
  */
 export function mapTransactionToNotion(firestoreId, data) {
-  return {
-    'Description':    { title: [{ type: 'text', text: { content: data.description || '' } }] },
-    'Amount':         num(data.amount),
-    'Category':       select(data.category),
-    'Category Group': select(data.category_group),
-    'Date':           { date: { start: toISODate(data.date) } },
-    'Payment Method': select(data.payment_method),
-    'Notes':          richText(data.notes),
-    'Source':         select(data.source || 'app'),
-    'Firestore ID':   richText(firestoreId),
+  const props = {
+    'Title': { title: [{ type: 'text', text: { content: data.description || '' } }] },
+    'Date': { date: { start: toISODate(data.date) } },
   };
+
+  if (data.amount != null) props['Amount'] = num(data.amount);
+  if (data.category) props['Category'] = select(data.category);
+  if (data.category_group) props['Type'] = select(data.category_group);
+  if (data.description) props['Description'] = richText(data.description);
+  if (data.payment_method) props['Payment Method'] = select(data.payment_method);
+  if (data.notes) props['Notes'] = richText(data.notes);
+  if (data.source) props['Source'] = select(data.source);
+
+  return props;
 }

@@ -54,29 +54,13 @@ export const onTransactionWrite = onDocumentWritten(
         await notion.pages.update({ page_id: notionPageId, properties });
         logger.info(`Updated Notion page ${notionPageId} for transaction ${docId}`);
       } else {
-        // --- IDEMPOTENCY CHECK: query by Firestore ID before creating ---
-        const existing = await notion.databases.query({
-          database_id: dbId,
-          filter: {
-            property: 'Firestore ID',
-            rich_text: { equals: docId },
-          },
-          page_size: 1,
+        // --- CREATE new page ---
+        const created = await notion.pages.create({
+          parent: { database_id: dbId },
+          properties,
         });
-
-        if (existing.results.length > 0) {
-          notionPageId = existing.results[0].id;
-          await notion.pages.update({ page_id: notionPageId, properties });
-          logger.info(`Found existing Notion page ${notionPageId} for transaction ${docId} (idempotency)`);
-        } else {
-          // --- CREATE new page ---
-          const created = await notion.pages.create({
-            parent: { database_id: dbId },
-            properties,
-          });
-          notionPageId = created.id;
-          logger.info(`Created Notion page ${notionPageId} for transaction ${docId}`);
-        }
+        notionPageId = created.id;
+        logger.info(`Created Notion page ${notionPageId} for transaction ${docId}`);
       }
 
       // --- WRITE BACK sync status ---
