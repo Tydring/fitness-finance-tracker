@@ -1,18 +1,21 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { onRequest } from 'firebase-functions/v2/https';
+import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { fetchBcvRates } from './bcvScraper.js';
 import { fetchBinanceP2PRate } from './binanceFetcher.js';
 
 const COLLECTION = 'exchange_rates';
+const scraperApiKey = defineSecret('SCRAPER_API_KEY');
 
 /**
  * Build the Firestore document from fetched results.
  * Uses Promise.allSettled so one source failing doesn't block the other.
  */
 async function buildRatesDocument() {
+    const apiKey = scraperApiKey.value();
     const [bcvResult, binanceResult] = await Promise.allSettled([
-        fetchBcvRates(),
+        fetchBcvRates(apiKey),
         fetchBinanceP2PRate(),
     ]);
 
@@ -73,7 +76,7 @@ async function writeRates() {
  * Scheduled function — runs daily at 12:30 UTC (08:30 VET).
  */
 export const scheduledFetchRates = onSchedule(
-    { schedule: '30 12 * * *', timeZone: 'UTC', retryCount: 3 },
+    { schedule: '30 12 * * *', timeZone: 'UTC', retryCount: 3, secrets: [scraperApiKey] },
     async () => {
         const { today } = await writeRates();
         console.log(`Exchange rates fetched and stored for ${today}`);
@@ -84,7 +87,7 @@ export const scheduledFetchRates = onSchedule(
  * HTTP function for manual testing.
  */
 export const manualFetchRates = onRequest(
-    { cors: true },
+    { cors: true, secrets: [scraperApiKey] },
     async (req, res) => {
         try {
             const { today, ratesDoc } = await writeRates();
