@@ -34,26 +34,45 @@ export const onWorkoutWrite = onDocumentWritten(
         return;
       }
 
-      // --- LOOP GUARD: skip write-back from ourselves ---
-      if (afterData.sync_status === 'synced' && afterData.notion_page_id) {
-        logger.info(`Skipping write-back echo for workout ${docId}`);
+      // --- LOOP GUARD: skip write-back echoes and already-resolved conflicts ---
+      if (afterData.notion_page_id && ['synced', 'conflict'].includes(afterData.sync_status)) {
+        logger.info(`Skipping ${afterData.sync_status} workout ${docId}`);
         return;
       }
 
-      // --- SKIP non-app sources ---
+      // --- SKIP non-app sources (poll write-backs land here if sync_status wasn't caught above) ---
       if (afterData.source !== 'app') {
         logger.info(`Skipping non-app source (${afterData.source}) for workout ${docId}`);
         return;
       }
 
+      // --- LAST-WRITE-WINS: if Notion was edited more recently, Notion wins ---
+      const notionLastEdited = afterData.notion_last_edited ? new Date(afterData.notion_last_edited) : null;
+      const appUpdatedAt = afterData.updated_at?.toDate?.() ?? null;
+      if (notionLastEdited && appUpdatedAt && notionLastEdited > appUpdatedAt) {
+        logger.warn(`LWW conflict for workout ${docId}: Notion (${notionLastEdited.toISOString()}) > App (${appUpdatedAt.toISOString()}), Notion wins`);
+        const docRef = getFirestore().doc(`workouts/${docId}`);
+        await docRef.update({ sync_status: 'conflict' });
+        await getFirestore().collection('sync_meta').add({
+          collection: 'workouts',
+          docId,
+          conflict: true,
+          winner: 'notion',
+          notion_time: notionLastEdited.toISOString(),
+          app_time: appUpdatedAt.toISOString(),
+          timestamp: new Date(),
+        });
+        return;
+      }
+
       const properties = mapWorkoutToNotion(docId, afterData);
       let notionPageId = afterData.notion_page_id;
-      let notionLastEdited;
+      let syncedLastEdited;
 
       if (notionPageId) {
         // --- UPDATE existing page ---
         const updated = await notion.pages.update({ page_id: notionPageId, properties });
-        notionLastEdited = updated.last_edited_time;
+        syncedLastEdited = updated.last_edited_time;
         logger.info(`Updated Notion page ${notionPageId} for workout ${docId}`);
       } else {
         // --- CREATE new page ---
@@ -62,7 +81,7 @@ export const onWorkoutWrite = onDocumentWritten(
           properties,
         });
         notionPageId = created.id;
-        notionLastEdited = created.last_edited_time;
+        syncedLastEdited = created.last_edited_time;
         logger.info(`Created Notion page ${notionPageId} for workout ${docId}`);
       }
 
@@ -71,7 +90,7 @@ export const onWorkoutWrite = onDocumentWritten(
       await docRef.update({
         sync_status: 'synced',
         notion_page_id: notionPageId,
-        notion_last_edited: notionLastEdited,
+        notion_last_edited: syncedLastEdited,
       });
     } catch (error) {
       logger.error(`Sync error for workout ${docId}:`, error);

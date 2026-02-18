@@ -88,6 +88,7 @@ export function mapNotionToWorkout(page) {
     notes: getPropRichText(p['Notes']),
     notion_page_id: page.id,
     notion_last_edited: page.last_edited_time,
+    updated_at: new Date(page.last_edited_time),
     source: 'notion',
     sync_status: 'synced',
   };
@@ -109,6 +110,7 @@ export function mapNotionToTransaction(page) {
     notes: getPropRichText(p['Notes']),
     notion_page_id: page.id,
     notion_last_edited: page.last_edited_time,
+    updated_at: new Date(page.last_edited_time),
     source: 'notion',
     sync_status: 'synced',
   };

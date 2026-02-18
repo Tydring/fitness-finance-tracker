@@ -71,6 +71,7 @@ export const useFirestoreCollection = (collectionName, queryConstraints = [], ma
         const docRef = doc(db, collectionName, id);
         await updateDoc(docRef, {
             ...updates,
+            source: 'app',
             updated_at: serverTimestamp(),
             last_modified: serverTimestamp(),
             sync_status: 'pending'
