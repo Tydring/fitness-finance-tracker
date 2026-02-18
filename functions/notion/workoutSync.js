@@ -48,10 +48,12 @@ export const onWorkoutWrite = onDocumentWritten(
 
       const properties = mapWorkoutToNotion(docId, afterData);
       let notionPageId = afterData.notion_page_id;
+      let notionLastEdited;
 
       if (notionPageId) {
         // --- UPDATE existing page ---
-        await notion.pages.update({ page_id: notionPageId, properties });
+        const updated = await notion.pages.update({ page_id: notionPageId, properties });
+        notionLastEdited = updated.last_edited_time;
         logger.info(`Updated Notion page ${notionPageId} for workout ${docId}`);
       } else {
         // --- CREATE new page ---
@@ -60,6 +62,7 @@ export const onWorkoutWrite = onDocumentWritten(
           properties,
         });
         notionPageId = created.id;
+        notionLastEdited = created.last_edited_time;
         logger.info(`Created Notion page ${notionPageId} for workout ${docId}`);
       }
 
@@ -68,6 +71,7 @@ export const onWorkoutWrite = onDocumentWritten(
       await docRef.update({
         sync_status: 'synced',
         notion_page_id: notionPageId,
+        notion_last_edited: notionLastEdited,
       });
     } catch (error) {
       logger.error(`Sync error for workout ${docId}:`, error);

@@ -61,6 +61,59 @@ export function mapWorkoutToNotion(firestoreId, data) {
   return props;
 }
 
+// ─── Notion → Firestore helpers ───────────────────────────────────────────────
+
+function getTitle(prop) { return prop?.title?.[0]?.plain_text ?? null; }
+function getPropDate(prop) { return prop?.date?.start ?? null; }
+function getPropSelect(prop) { return prop?.select?.name ?? null; }
+function getPropNumber(prop) { return prop?.number ?? null; }
+function getPropRichText(prop) { return prop?.rich_text?.[0]?.plain_text ?? null; }
+
+/**
+ * Maps a Notion workout page back to a Firestore workout document.
+ * Sets source='notion' and sync_status='synced' so the write trigger skips it.
+ */
+export function mapNotionToWorkout(page) {
+  const p = page.properties;
+  return {
+    name: getTitle(p['Title']),
+    date: getPropDate(p['Date']),
+    exercise: getPropSelect(p['Exercise']),
+    category: getPropSelect(p['Category']),
+    sets: getPropNumber(p['Sets']),
+    reps: getPropNumber(p['Reps']),
+    weight_kg: getPropNumber(p['Weight']),
+    duration_min: getPropNumber(p['Duration']),
+    distance_km: getPropNumber(p['Distance (km)']),
+    notes: getPropRichText(p['Notes']),
+    notion_page_id: page.id,
+    notion_last_edited: page.last_edited_time,
+    source: 'notion',
+    sync_status: 'synced',
+  };
+}
+
+/**
+ * Maps a Notion transaction page back to a Firestore transaction document.
+ * Sets source='notion' and sync_status='synced' so the write trigger skips it.
+ */
+export function mapNotionToTransaction(page) {
+  const p = page.properties;
+  return {
+    description: getTitle(p['Title']),
+    date: getPropDate(p['Date']),
+    amount: getPropNumber(p['Amount']),
+    category: getPropSelect(p['Category']),
+    category_group: getPropSelect(p['Type']),
+    payment_method: getPropSelect(p['Payment Method']),
+    notes: getPropRichText(p['Notes']),
+    notion_page_id: page.id,
+    notion_last_edited: page.last_edited_time,
+    source: 'notion',
+    sync_status: 'synced',
+  };
+}
+
 /**
  * Maps a Firestore transaction document to Notion page properties.
  * Only includes properties that have values.

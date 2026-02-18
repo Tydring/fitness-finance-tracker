@@ -15,7 +15,8 @@
       "Bash(firebase functions:log:*)",
       "Bash(npm run dev:*)",
       "Bash(firebase functions:secrets:set:*)",
-      "Bash(printf:*)"
+      "Bash(printf:*)",
+      "Bash(npm show:*)"
     ]
   }
 }
