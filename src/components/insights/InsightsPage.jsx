@@ -3,10 +3,12 @@ import { BarChart3 } from 'lucide-react';
 import { useWorkouts, useTransactions } from '../../hooks/useFirestore';
 import { useInsightsData } from './useInsightsData';
 import WorkoutFrequencyChart from './WorkoutFrequencyChart';
+import VolumeProgressionChart from './VolumeProgressionChart';
 import CategoryBreakdownChart from './CategoryBreakdownChart';
+import RPETrendChart from './RPETrendChart';
 import SpendingTrendChart from './SpendingTrendChart';
 import SpendingByCategoryChart from './SpendingByCategoryChart';
-import RPETrendChart from './RPETrendChart';
+import IncomeVsExpensesChart from './IncomeVsExpensesChart';
 import './InsightsPage.css';
 
 const TABS = ['All', 'Fitness', 'Finance'];
@@ -19,12 +21,15 @@ const InsightsPage = () => {
 
     const {
         workoutFrequency,
+        volumeProgression,
         categoryBreakdown,
+        rpeTrend,
         spendingTrend,
         spendingByCategory,
-        rpeTrend,
+        incomeVsExpenses,
         totalWorkouts,
-        totalSpent
+        totalSpent,
+        totalIncome,
     } = useInsightsData(workouts, transactions);
 
     const showFitness = activeTab === 'All' || activeTab === 'Fitness';
@@ -78,18 +83,26 @@ const InsightsPage = () => {
                                 <div className="stat-label">Total Spent</div>
                             </div>
                         )}
+                        {showFinance && totalIncome > 0 && (
+                            <div className="summary-stat glass-card">
+                                <div className="stat-value green">${totalIncome.toFixed(2)}</div>
+                                <div className="stat-label">Total Income</div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="chart-grid">
                         {showFitness && workouts.length > 0 && (
                             <>
                                 <WorkoutFrequencyChart data={workoutFrequency} />
+                                <VolumeProgressionChart data={volumeProgression} />
                                 <CategoryBreakdownChart data={categoryBreakdown} />
                                 <RPETrendChart data={rpeTrend} />
                             </>
                         )}
                         {showFinance && transactions.length > 0 && (
                             <>
+                                <IncomeVsExpensesChart data={incomeVsExpenses} />
                                 <SpendingTrendChart data={spendingTrend} />
                                 <SpendingByCategoryChart data={spendingByCategory} />
                             </>

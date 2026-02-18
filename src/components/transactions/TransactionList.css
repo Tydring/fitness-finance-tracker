@@ -40,3 +40,12 @@
     background: rgba(99, 102, 241, 0.1);
     color: #a5b4fc;
 }
+
+.tx-income {
+    background: rgba(16, 185, 129, 0.1);
+    color: #6ee7b7;
+}
+
+.card-amount-income {
+    color: var(--success);
+}

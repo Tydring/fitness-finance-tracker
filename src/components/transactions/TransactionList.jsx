@@ -71,13 +71,13 @@ const TransactionList = () => {
                                 <span className="card-date">{formatDate(tx.date)}</span>
                             </div>
 
-                            <div className="card-amount">
-                                ${Number(tx.amount).toFixed(2)}
+                            <div className={`card-amount ${tx.type === 'income' ? 'card-amount-income' : ''}`}>
+                                {tx.type === 'income' ? '+' : ''}${Number(tx.amount).toFixed(2)}
                             </div>
 
                             <div className="card-stats">
-                                <div className={`tx-category ${fitness ? 'tx-fitness' : ''}`}>
-                                    {tx.category}
+                                <div className={`tx-category ${tx.type === 'income' ? 'tx-income' : fitness ? 'tx-fitness' : ''}`}>
+                                    {tx.category || (tx.type === 'income' ? 'Income' : '')}
                                 </div>
                                 {PayIcon && (
                                     <div className="stat">

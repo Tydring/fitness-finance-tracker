@@ -101,6 +101,7 @@ export function mapNotionToWorkout(page) {
 export function mapNotionToTransaction(page) {
   const p = page.properties;
   return {
+    type: getPropSelect(p['Kind']) || 'expense',
     description: getTitle(p['Title']),
     date: getPropDate(p['Date']),
     amount: getPropNumber(p['Amount']),
@@ -126,6 +127,7 @@ export function mapTransactionToNotion(firestoreId, data) {
     'Date': { date: { start: toISODate(data.date) } },
   };
 
+  if (data.type) props['Kind'] = select(data.type);
   if (data.amount != null) props['Amount'] = num(data.amount);
   if (data.category) props['Category'] = select(data.category);
   if (data.category_group) props['Type'] = select(data.category_group);

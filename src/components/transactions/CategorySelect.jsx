@@ -1,6 +1,17 @@
-import { EXPENSE_CATEGORIES } from '../../config/categories';
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '../../config/categories';
 
-const CategorySelect = ({ value, onChange }) => {
+const CategorySelect = ({ value, onChange, incomeMode = false }) => {
+    if (incomeMode) {
+        return (
+            <select id="category" name="category" value={value} onChange={onChange} required>
+                <option value="">Select source...</option>
+                {INCOME_CATEGORIES.map((item) => (
+                    <option key={item} value={item}>{item}</option>
+                ))}
+            </select>
+        );
+    }
+
     return (
         <select id="category" name="category" value={value} onChange={onChange} required>
             <option value="">Select category...</option>

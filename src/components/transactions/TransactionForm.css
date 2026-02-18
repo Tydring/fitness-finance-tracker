@@ -4,6 +4,37 @@
     gap: 1rem;
 }
 
+.type-toggle {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--surface);
+    border-radius: 0.75rem;
+    padding: 0.25rem;
+}
+
+.type-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.type-btn.active.expense {
+    background: rgba(236, 72, 153, 0.15);
+    color: #ec4899;
+}
+
+.type-btn.active.income {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+}
+
 .category-group-badge {
     display: inline-flex;
     align-items: center;

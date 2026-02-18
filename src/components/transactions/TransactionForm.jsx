@@ -7,6 +7,7 @@ import CategorySelect from './CategorySelect';
 import './TransactionForm.css';
 
 const INITIAL_STATE = {
+    type: 'expense',
     description: '',
     amount: '',
     category: '',
@@ -37,13 +38,15 @@ const TransactionForm = () => {
         setSaving(true);
 
         try {
+            const isIncome = form.type === 'income';
             const txData = {
+                type: form.type,
                 description: form.description,
                 amount: Number(form.amount),
                 category: form.category,
-                category_group: CATEGORY_GROUP_MAP[form.category] || '',
+                category_group: isIncome ? 'Income' : (CATEGORY_GROUP_MAP[form.category] || ''),
                 date: dateInputToTimestamp(form.date),
-                payment_method: form.payment_method || null,
+                payment_method: isIncome ? null : (form.payment_method || null),
                 notes: form.notes
             };
 
@@ -63,9 +66,29 @@ const TransactionForm = () => {
 
     return (
         <div className="page-container">
-            <h2 className="form-title">{editId ? 'Edit Expense' : 'Log Expense'}</h2>
+            <h2 className="form-title">
+                {editId ? 'Edit' : 'Log'} {form.type === 'income' ? 'Income' : 'Expense'}
+            </h2>
 
             <form onSubmit={handleSubmit} className="transaction-form">
+                {/* Type toggle */}
+                <div className="type-toggle">
+                    <button
+                        type="button"
+                        className={`type-btn${form.type === 'expense' ? ' active expense' : ''}`}
+                        onClick={() => setForm((p) => ({ ...p, type: 'expense', category: '' }))}
+                    >
+                        Expense
+                    </button>
+                    <button
+                        type="button"
+                        className={`type-btn${form.type === 'income' ? ' active income' : ''}`}
+                        onClick={() => setForm((p) => ({ ...p, type: 'income', category: '' }))}
+                    >
+                        Income
+                    </button>
+                </div>
+
                 {/* Description */}
                 <div className="form-group">
                     <label htmlFor="description">Description</label>
@@ -111,32 +134,40 @@ const TransactionForm = () => {
 
                 {/* Category */}
                 <div className="form-group">
-                    <label htmlFor="category">Category</label>
-                    <CategorySelect value={form.category} onChange={handleChange} />
+                    <label htmlFor="category">
+                        {form.type === 'income' ? 'Income Source' : 'Category'}
+                    </label>
+                    <CategorySelect
+                        value={form.category}
+                        onChange={handleChange}
+                        incomeMode={form.type === 'income'}
+                    />
                 </div>
 
-                {/* Category group badge */}
-                {form.category && CATEGORY_GROUP_MAP[form.category] && (
+                {/* Category group badge — expenses only */}
+                {form.type === 'expense' && form.category && CATEGORY_GROUP_MAP[form.category] && (
                     <div className="category-group-badge">
                         {CATEGORY_GROUP_MAP[form.category]}
                     </div>
                 )}
 
-                {/* Payment Method */}
-                <div className="form-group">
-                    <label htmlFor="payment_method">Payment Method</label>
-                    <select
-                        id="payment_method"
-                        name="payment_method"
-                        value={form.payment_method}
-                        onChange={handleChange}
-                    >
-                        <option value="">Select method...</option>
-                        {PAYMENT_METHODS.map((m) => (
-                            <option key={m} value={m}>{m}</option>
-                        ))}
-                    </select>
-                </div>
+                {/* Payment Method — expenses only */}
+                {form.type === 'expense' && (
+                    <div className="form-group">
+                        <label htmlFor="payment_method">Payment Method</label>
+                        <select
+                            id="payment_method"
+                            name="payment_method"
+                            value={form.payment_method}
+                            onChange={handleChange}
+                        >
+                            <option value="">Select method...</option>
+                            {PAYMENT_METHODS.map((m) => (
+                                <option key={m} value={m}>{m}</option>
+                            ))}
+                        </select>
+                    </div>
+                )}
 
                 {/* Notes */}
                 <div className="form-group">
@@ -153,7 +184,9 @@ const TransactionForm = () => {
 
                 {/* Submit */}
                 <button type="submit" className="btn btn-primary btn-submit" disabled={saving}>
-                    {saving ? 'Saving...' : editId ? 'Update Expense' : 'Log Expense'}
+                    {saving ? 'Saving...' : editId
+                        ? `Update ${form.type === 'income' ? 'Income' : 'Expense'}`
+                        : `Log ${form.type === 'income' ? 'Income' : 'Expense'}`}
                 </button>
             </form>
         </div>

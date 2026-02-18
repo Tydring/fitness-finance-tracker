@@ -66,6 +66,10 @@
     color: #ec4899;
 }
 
+.summary-stat .stat-value.green {
+    color: var(--success);
+}
+
 .summary-stat .stat-label {
     font-size: 0.75rem;
     color: var(--text-muted);

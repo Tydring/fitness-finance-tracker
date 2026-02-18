@@ -1,9 +1,10 @@
 import { useMemo } from 'react';
-import { startOfWeek, subWeeks, subDays, format, differenceInCalendarWeeks } from 'date-fns';
+import { startOfWeek, startOfMonth, subWeeks, subMonths, subDays, format, differenceInCalendarWeeks, differenceInCalendarMonths } from 'date-fns';
 import { toDate } from '../../utils/dateHelpers';
 
 const WEEKS = 8;
 const DAYS = 30;
+const MONTHS = 6;
 
 export const useInsightsData = (workouts = [], transactions = []) => {
     return useMemo(() => {
@@ -19,6 +20,7 @@ export const useInsightsData = (workouts = [], transactions = []) => {
 
         const categoryMap = {};
         let rpeWeekTotals = Array.from({ length: WEEKS }, () => ({ sum: 0, count: 0 }));
+        let volumeWeekTotals = Array.from({ length: WEEKS }, () => 0);
 
         workouts.forEach((w) => {
             const d = toDate(w.date);
@@ -36,6 +38,10 @@ export const useInsightsData = (workouts = [], transactions = []) => {
                     if (w.rpe != null) {
                         rpeWeekTotals[weekIdx].sum += Number(w.rpe);
                         rpeWeekTotals[weekIdx].count++;
+                    }
+                    // Volume: sets × reps × weight_kg (strength only)
+                    if (w.sets && w.reps && w.weight_kg) {
+                        volumeWeekTotals[weekIdx] += w.sets * w.reps * w.weight_kg;
                     }
                 }
             }
@@ -59,6 +65,11 @@ export const useInsightsData = (workouts = [], transactions = []) => {
                 : null
         }));
 
+        const volumeProgression = weekBuckets.map((bucket, i) => ({
+            week: bucket.week,
+            volume: Math.round(volumeWeekTotals[i])
+        }));
+
         // --- Spending Trend (daily spend, last 30 days) ---
         const dayBuckets = {};
         for (let i = 0; i < DAYS; i++) {
@@ -66,24 +77,43 @@ export const useInsightsData = (workouts = [], transactions = []) => {
             dayBuckets[day] = 0;
         }
 
+        // --- Income vs Expenses (monthly, last 6 months) ---
+        const monthStart = startOfMonth(subMonths(now, MONTHS - 1));
+        const monthBuckets = Array.from({ length: MONTHS }, (_, i) => {
+            const d = subMonths(startOfMonth(now), MONTHS - 1 - i);
+            return { month: format(d, 'MMM'), income: 0, expenses: 0 };
+        });
+
         const spendCategoryMap = {};
 
         transactions.forEach((t) => {
             const d = toDate(t.date);
             if (!d) return;
             const amount = Number(t.amount) || 0;
+            const isIncome = t.type === 'income';
 
-            // Daily spending
-            if (d >= thirtyDaysAgo) {
+            // Daily spending (expenses only)
+            if (!isIncome && d >= thirtyDaysAgo) {
                 const key = format(d, 'MMM d');
                 if (key in dayBuckets) {
                     dayBuckets[key] += amount;
                 }
             }
 
-            // Category group spending (all time)
-            const group = t.category_group || 'Other';
-            spendCategoryMap[group] = (spendCategoryMap[group] || 0) + amount;
+            // Monthly income vs expenses
+            if (d >= monthStart) {
+                const mIdx = differenceInCalendarMonths(d, monthStart);
+                if (mIdx >= 0 && mIdx < MONTHS) {
+                    if (isIncome) monthBuckets[mIdx].income += amount;
+                    else monthBuckets[mIdx].expenses += amount;
+                }
+            }
+
+            // Category group spending (all time, expenses only)
+            if (!isIncome) {
+                const group = t.category_group || 'Other';
+                spendCategoryMap[group] = (spendCategoryMap[group] || 0) + amount;
+            }
         });
 
         const spendingTrend = Object.entries(dayBuckets).map(([day, amount]) => ({
@@ -98,20 +128,30 @@ export const useInsightsData = (workouts = [], transactions = []) => {
             }))
             .sort((a, b) => b.amount - a.amount);
 
+        const incomeVsExpenses = monthBuckets.map(({ month, income, expenses }) => ({
+            month,
+            income: Math.round(income * 100) / 100,
+            expenses: Math.round(expenses * 100) / 100,
+        }));
+
         // --- Summary stats ---
         const totalWorkouts = workouts.length;
-        const totalSpent = Math.round(
-            transactions.reduce((sum, t) => sum + (Number(t.amount) || 0), 0) * 100
-        ) / 100;
+        const expenses = transactions.filter((t) => t.type !== 'income');
+        const incomes = transactions.filter((t) => t.type === 'income');
+        const totalSpent = Math.round(expenses.reduce((sum, t) => sum + (Number(t.amount) || 0), 0) * 100) / 100;
+        const totalIncome = Math.round(incomes.reduce((sum, t) => sum + (Number(t.amount) || 0), 0) * 100) / 100;
 
         return {
             workoutFrequency,
+            volumeProgression,
             categoryBreakdown,
             spendingTrend,
             spendingByCategory,
+            incomeVsExpenses,
             rpeTrend,
             totalWorkouts,
-            totalSpent
+            totalSpent,
+            totalIncome
         };
     }, [workouts, transactions]);
 };

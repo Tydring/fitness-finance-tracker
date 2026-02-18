@@ -1,6 +1,10 @@
 /**
- * Expense categories and payment methods for transaction logging.
+ * Expense and income categories for transaction logging.
  */
+
+export const INCOME_CATEGORIES = [
+    'Salary', 'Freelance', 'Investment', 'Gift', 'Refund', 'Other Income'
+];
 
 export const EXPENSE_CATEGORIES = [
     { group: 'Health & Fitness', items: ['Gym Membership', 'Supplements', 'Sportswear', 'Personal Training'] },
