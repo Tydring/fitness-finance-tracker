@@ -3,6 +3,7 @@ import { useWorkouts } from '../../hooks/useFirestore';
 import { formatDate, toDate } from '../../utils/dateHelpers';
 import { isStrengthExercise, isCardioExercise } from '../../config/exercises';
 import { Plus, Edit2, Trash2, Dumbbell, Timer, TrendingUp } from 'lucide-react';
+import SyncStatusButton from '../sync/SyncStatusButton';
 import './WorkoutList.css';
 
 const WorkoutList = () => {
@@ -26,13 +27,16 @@ const WorkoutList = () => {
         <div className="page-container">
             <div className="page-header">
                 <h2>Workouts</h2>
-                <button
-                    className="btn btn-primary btn-add"
-                    onClick={() => navigate('/workouts/new')}
-                >
-                    <Plus size={20} />
-                    <span>Log</span>
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <SyncStatusButton />
+                    <button
+                        className="btn btn-primary btn-add"
+                        onClick={() => navigate('/workouts/new')}
+                    >
+                        <Plus size={20} />
+                        <span>Log</span>
+                    </button>
+                </div>
             </div>
 
             {loading && <div className="loading-text">Loading workouts...</div>}

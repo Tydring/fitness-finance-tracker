@@ -3,6 +3,7 @@ import { useTransactions } from '../../hooks/useFirestore';
 import { formatDate } from '../../utils/dateHelpers';
 import { isFitnessCategory } from '../../config/categories';
 import { Plus, Edit2, Trash2, Wallet, CreditCard, Banknote } from 'lucide-react';
+import SyncStatusButton from '../sync/SyncStatusButton';
 import './TransactionList.css';
 
 const TransactionList = () => {
@@ -33,13 +34,16 @@ const TransactionList = () => {
         <div className="page-container">
             <div className="page-header">
                 <h2>Expenses</h2>
-                <button
-                    className="btn btn-primary btn-add"
-                    onClick={() => navigate('/expenses/new')}
-                >
-                    <Plus size={20} />
-                    <span>Log</span>
-                </button>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <SyncStatusButton />
+                    <button
+                        className="btn btn-primary btn-add"
+                        onClick={() => navigate('/expenses/new')}
+                    >
+                        <Plus size={20} />
+                        <span>Log</span>
+                    </button>
+                </div>
             </div>
 
             {loading && <div className="loading-text">Loading expenses...</div>}
