@@ -8,4 +8,5 @@ export { pollNotionWorkouts } from '../notion/workoutPoll.js';
 export { pollNotionTransactions } from '../notion/transactionPoll.js';
 export { manualSync } from '../notion/manualSync.js';
 export { scheduledFetchRates, manualFetchRates } from '../exchange/fetchRates.js';
-export { aggregateWeeklyData } from '../aggregation/aggregateWeeklyData.js';
+export { aggregateWeeklyData, manualAggregateWeeklyData } from '../aggregation/aggregateWeeklyData.js';
+export { generateWeeklyInsights, manualGenerateInsights } from '../aggregation/generateWeeklyInsights.js';

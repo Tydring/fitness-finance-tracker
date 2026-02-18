@@ -17,7 +17,8 @@
       "Bash(firebase functions:secrets:set:*)",
       "Bash(printf:*)",
       "Bash(npm show:*)",
-      "Bash(git -C \"C:\\\\Users\\\\Christian\\\\.gemini\\\\antigravity\\\\scratch\\\\fitness-finance-tracker\" status)"
+      "Bash(git -C \"C:\\\\Users\\\\Christian\\\\.gemini\\\\antigravity\\\\scratch\\\\fitness-finance-tracker\" status)",
+      "Bash(python -m json.tool:*)"
     ]
   }
 }

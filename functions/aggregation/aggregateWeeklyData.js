@@ -1,4 +1,5 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
+import { onRequest } from 'firebase-functions/v2/https';
 import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
 
 const COLLECTION = 'weekly_summaries';
@@ -194,5 +195,21 @@ export const aggregateWeeklyData = onSchedule(
             `Weekly aggregation complete for ${weekKey}: ` +
             `${workoutCount} workouts, ${transactionCount} transactions`
         );
+    }
+);
+
+/**
+ * HTTP trigger for manual testing.
+ */
+export const manualAggregateWeeklyData = onRequest(
+    { cors: true },
+    async (req, res) => {
+        try {
+            const { weekKey, workoutCount, transactionCount } = await runAggregation();
+            res.json({ ok: true, weekKey, workoutCount, transactionCount });
+        } catch (err) {
+            console.error('manualAggregateWeeklyData error:', err);
+            res.status(500).json({ ok: false, error: err.message });
+        }
     }
 );
