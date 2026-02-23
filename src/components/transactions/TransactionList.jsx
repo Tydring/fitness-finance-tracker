@@ -1,14 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { useTransactions } from '../../hooks/useFirestore';
 import { formatDate } from '../../utils/dateHelpers';
-import { isFitnessCategory } from '../../config/categories';
+import { isFitnessCategory, getCurrencyForAccount } from '../../config/categories';
+import { useExchangeRates } from '../../hooks/useExchangeRates';
 import { Plus, Edit2, Trash2, Wallet, CreditCard, Banknote } from 'lucide-react';
 import SyncStatusButton from '../sync/SyncStatusButton';
 import './TransactionList.css';
 
 const TransactionList = () => {
     const { data: transactions, loading, deleteItem } = useTransactions();
+    const { rates } = useExchangeRates();
     const navigate = useNavigate();
+
+    const bcvUsd = rates?.bcv_usd || null;
 
     const handleDelete = async (id, description) => {
         if (window.confirm(`Delete "${description}"?`)) {
@@ -56,7 +60,7 @@ const TransactionList = () => {
                 </div>
             )}
 
-            <div className="transaction-cards">
+            <div className="transaction-cards animate-list">
                 {transactions.map((tx) => {
                     const PayIcon = getPaymentIcon(tx.payment_method);
                     const fitness = isFitnessCategory(tx.category);
@@ -71,8 +75,17 @@ const TransactionList = () => {
                                 <span className="card-date">{formatDate(tx.date)}</span>
                             </div>
 
-                            <div className={`card-amount ${tx.type === 'income' ? 'card-amount-income' : ''}`}>
-                                {tx.type === 'income' ? '+' : ''}${Number(tx.amount).toFixed(2)}
+                            <div
+                                className={`card-amount ${tx.type === 'income' ? 'card-amount-income' : ''}`}
+                                title={
+                                    getCurrencyForAccount(tx.account) === 'VES' && bcvUsd
+                                        ? `~ $${(Number(tx.amount) / bcvUsd).toFixed(2)} USD (Rate: Bs. ${bcvUsd})`
+                                        : ''
+                                }
+                            >
+                                {tx.type === 'income' ? '+' : ''}
+                                {getCurrencyForAccount(tx.account) === 'VES' ? 'Bs. ' : '$'}
+                                {Number(tx.amount).toFixed(2)}
                             </div>
 
                             <div className="card-stats">

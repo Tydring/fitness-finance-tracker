@@ -17,9 +17,14 @@ async function upsertDoc(db, page, collectionName, mapper) {
       logger.info(`pollHelpers: no change on page ${page.id} (${collectionName}), skipping`);
       return;
     }
+    // Only update fields provided by Notion
     await docSnap.ref.update(firestoreData);
     logger.info(`pollHelpers: updated ${collectionName}/${docSnap.id} from Notion page ${page.id}`);
   } else {
+    // If Notion created the row, we don't have a userId. 
+    // We must assign it to a default/admin user or leave it blank
+    // depending on the app's multi-tenant strategy. 
+    // Since this is a personal app, we might need a default user ID or allow orphaned docs.
     await col.add({ ...firestoreData, created_at: FieldValue.serverTimestamp() });
     logger.info(`pollHelpers: created ${collectionName} doc from Notion page ${page.id}`);
   }

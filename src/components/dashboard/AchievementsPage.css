@@ -1,0 +1,192 @@
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+}
+
+.back-btn:hover {
+    background: var(--surface-highlight);
+    color: var(--text);
+}
+
+.stats-overview {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-highlight);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.stat-icon {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.stat-icon.flame {
+    color: #ff6b6b;
+}
+
+.stat-icon.trophy {
+    color: #ffd93d;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-val {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+.stat-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.badge-card {
+    background: var(--surface);
+    border: 1px solid var(--surface-highlight);
+    border-radius: 1rem;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.badge-card.earned {
+    background: linear-gradient(145deg, rgba(255, 217, 61, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%);
+    border-color: rgba(255, 217, 61, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 217, 61, 0.05);
+}
+
+.badge-card.earned:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 217, 61, 0.1);
+}
+
+.badge-icon-wrapper {
+    background: rgba(0, 0, 0, 0.2);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    border: 2px solid transparent;
+}
+
+.badge-card.earned .badge-icon-wrapper {
+    color: #ffd93d;
+    background: rgba(255, 217, 61, 0.15);
+    border-color: rgba(255, 217, 61, 0.5);
+    box-shadow: 0 0 15px rgba(255, 217, 61, 0.2) inset;
+}
+
+.badge-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--text);
+}
+
+.badge-card.earned .badge-title {
+    color: #ffd93d;
+}
+
+.badge-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.badge-card.locked .badge-icon-wrapper,
+.badge-card.locked .badge-title,
+.badge-card.locked .badge-desc {
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+.locked-overlay {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.2rem 0.5rem;
+    border-radius: 1rem;
+    color: var(--text-muted);
+    backdrop-filter: blur(4px);
+}
+
+/* Streak Animation overrides */
+.stat-card:hover .stat-icon.flame {
+    animation: flameFlicker 1.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 12px rgba(255, 107, 107, 0.8));
+}
+
+@keyframes flameFlicker {
+    0% {
+        transform: scale(1) rotate(-2deg);
+    }
+
+    25% {
+        transform: scale(1.1) rotate(4deg);
+    }
+
+    50% {
+        transform: scale(1.05) rotate(-3deg);
+    }
+
+    75% {
+        transform: scale(1.15) rotate(5deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}

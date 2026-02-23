@@ -1,52 +1,72 @@
 .dashboard-title {
-    margin-bottom: 1.25rem;
-    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
 }
 
 .summary-grid {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .summary-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.25rem;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
     cursor: pointer;
-    transition: transform 0.15s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.summary-card:active {
-    transform: scale(0.98);
+/* Subtle glow effect on hover */
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.06), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+}
+
+.summary-card:hover::before {
+    opacity: 1;
 }
 
 .summary-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 48px;
-    height: 48px;
-    border-radius: 0.75rem;
+    width: 54px;
+    height: 54px;
+    border-radius: 1rem;
     flex-shrink: 0;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.1);
 }
 
 .icon-fitness {
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(79, 70, 229, 0.3) 100%);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .icon-finance {
-    background: rgba(236, 72, 153, 0.15);
-    color: #ec4899;
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(219, 39, 119, 0.3) 100%);
+    color: #f472b6;
+    border: 1px solid rgba(236, 72, 153, 0.2);
 }
 
 .icon-crossover {
-    background: rgba(16, 185, 129, 0.15);
-    color: #34d399;
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.3) 100%);
+    color: #6ee7b7;
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .summary-content {
@@ -56,46 +76,67 @@
 }
 
 .summary-value {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
     font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
 }
 
 .summary-label {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
+    font-weight: 500;
 }
 
 .summary-arrow {
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.2);
     flex-shrink: 0;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.summary-card:hover .summary-arrow {
+    transform: translateX(4px);
+    color: var(--primary);
 }
 
 /* Recent activity */
 .recent-section {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1.5rem;
 }
 
 .recent-block h3 {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .recent-list {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    overflow: hidden;
 }
 
 .recent-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.6rem 0;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: transparent;
+    transition: background 0.2s;
+}
+
+.recent-item:hover {
+    background: rgba(255, 255, 255, 0.02);
 }
 
 .recent-item:last-child {
@@ -103,11 +144,123 @@
 }
 
 .recent-name {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-weight: 500;
+    color: #f8fafc;
 }
 
 .recent-meta {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
+}
+
+.recent-meta-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.recent-amount-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.summary-sub,
+.account-balance-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.summary-sub {
+    margin-top: -0.3rem;
+    margin-bottom: 0.25rem;
+}
+
+.account-balance-sub {
+    margin-top: 0.25rem;
+}
+
+/* Streak Animation */
+.streak-card:hover .summary-icon svg {
+    animation: flameFlicker 1.5s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.6));
+}
+
+@keyframes flameFlicker {
+    0% {
+        transform: scale(1) rotate(-2deg);
+    }
+
+    25% {
+        transform: scale(1.1) rotate(4deg);
+    }
+
+    50% {
+        transform: scale(1.05) rotate(-3deg);
+    }
+
+    75% {
+        transform: scale(1.15) rotate(5deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+/* Account Balances */
+.account-balances-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.account-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    text-align: center;
+    justify-content: center;
+    border-radius: 1rem;
+}
+
+.account-name {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+}
+
+.account-balance {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.account-card.positive .account-balance {
+    color: #34d399;
+    /* Emerald 400 */
+}
+
+.account-card.negative .account-balance {
+    color: #f87171;
+    /* Red 400 */
+}
+
+/* Responsive text for potentially long currency strings */
+.text-sm-custom {
+    font-size: 1.35rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .text-sm-custom {
+        font-size: 1.6rem !important;
+    }
 }

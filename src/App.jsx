@@ -6,6 +6,8 @@ import WorkoutForm from './components/workouts/WorkoutForm';
 import TransactionList from './components/transactions/TransactionList';
 import TransactionForm from './components/transactions/TransactionForm';
 import OverviewDashboard from './components/dashboard/OverviewDashboard';
+import AchievementsPage from './components/dashboard/AchievementsPage';
+import CalculatorPage from './components/dashboard/CalculatorPage';
 import InsightsPage from './components/insights/InsightsPage';
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
         <Route path="/expenses" element={<TransactionList />} />
         <Route path="/expenses/new" element={<TransactionForm />} />
         <Route path="/insights" element={<InsightsPage />} />
+        <Route path="/achievements" element={<AchievementsPage />} />
+        <Route path="/calculator" element={<CalculatorPage />} />
       </Route>
     </Routes>
   );

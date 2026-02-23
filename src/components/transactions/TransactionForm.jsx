@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useTransactions } from '../../hooks/useFirestore';
-import { PAYMENT_METHODS, CATEGORY_GROUP_MAP } from '../../config/categories';
+import { PAYMENT_METHODS, CATEGORY_GROUP_MAP, ACCOUNTS, getCurrencyForAccount } from '../../config/categories';
 import { todayISO, dateInputToTimestamp } from '../../utils/dateHelpers';
 import CategorySelect from './CategorySelect';
 import './TransactionForm.css';
@@ -13,6 +13,7 @@ const INITIAL_STATE = {
     category: '',
     date: todayISO(),
     payment_method: '',
+    account: '',
     notes: ''
 };
 
@@ -47,6 +48,8 @@ const TransactionForm = () => {
                 category_group: isIncome ? 'Income' : (CATEGORY_GROUP_MAP[form.category] || ''),
                 date: dateInputToTimestamp(form.date),
                 payment_method: isIncome ? null : (form.payment_method || null),
+                account: form.account,
+                currency: getCurrencyForAccount(form.account),
                 notes: form.notes
             };
 
@@ -101,6 +104,23 @@ const TransactionForm = () => {
                         placeholder="e.g. Protein powder"
                         required
                     />
+                </div>
+
+                {/* Account Selection */}
+                <div className="form-group">
+                    <label htmlFor="account">Account</label>
+                    <select
+                        id="account"
+                        name="account"
+                        value={form.account}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value="">Select account...</option>
+                        {ACCOUNTS.map((acc) => (
+                            <option key={acc} value={acc}>{acc}</option>
+                        ))}
+                    </select>
                 </div>
 
                 {/* Amount + Date row */}

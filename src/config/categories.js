@@ -3,8 +3,18 @@
  */
 
 export const INCOME_CATEGORIES = [
-    'Salary', 'Freelance', 'Investment', 'Gift', 'Refund', 'Other Income'
+    'School Salary', 'La Consulta Psicologica Salary', 'Private Practice Salary', 'Classes', 'Freelance', 'Investment', 'Gift', 'Refund', 'Other Income'
 ];
+
+export const ACCOUNTS = ['Facebank', 'Bolivares', 'Cash'];
+
+export const ACCOUNT_CURRENCY_MAP = {
+    'Facebank': 'USD',
+    'Cash': 'USD',
+    'Bolivares': 'VES'
+};
+
+export const getCurrencyForAccount = (account) => ACCOUNT_CURRENCY_MAP[account] || 'USD';
 
 export const EXPENSE_CATEGORIES = [
     { group: 'Health & Fitness', items: ['Gym Membership', 'Supplements', 'Sportswear', 'Personal Training'] },

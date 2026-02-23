@@ -30,6 +30,9 @@ export const EXERCISE_CATEGORY_MAP = {
     'Romanian Deadlift': 'Strength - Lower',
     'Running': 'Cardio',
     'Cycling': 'Cardio',
+    'Walking': 'Cardio',
+    'Hiking': 'Cardio',
+    'Apple Fitness+': 'Cardio',
     'Jump Rope': 'Cardio',
     'Planks': 'Flexibility',
     'Stretching': 'Flexibility'

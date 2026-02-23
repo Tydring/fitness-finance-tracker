@@ -104,8 +104,8 @@ const ExchangeRateWidget = () => {
                         {bcvFailed && binanceFailed
                             ? 'BCV & Binance sources unavailable'
                             : bcvFailed
-                              ? 'BCV source unavailable'
-                              : 'Binance source unavailable'}
+                                ? 'BCV source unavailable'
+                                : 'Binance source unavailable'}
                     </span>
                 </div>
             )}

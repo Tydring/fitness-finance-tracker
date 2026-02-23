@@ -49,7 +49,7 @@ const WorkoutList = () => {
                 </div>
             )}
 
-            <div className="workout-cards">
+            <div className="workout-cards animate-list">
                 {workouts.map((w) => {
                     const strength = isStrengthExercise(w.exercise);
                     const cardio = isCardioExercise(w.exercise);

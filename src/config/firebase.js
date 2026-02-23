@@ -1,10 +1,10 @@
 // Project: Fitness & Finance Tracker
 // Configuration: Firebase
 import { initializeApp } from 'firebase/app';
-import { 
-  initializeFirestore, 
-  persistentLocalCache, 
-  persistentMultipleTabManager 
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager
 } from 'firebase/firestore';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFunctions } from 'firebase/functions';
@@ -22,10 +22,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore with offline persistence
+// Re-enable Firestore with offline persistence
+// Using persistentMultipleTabManager helps ensure the PWA and Browser don't corrupt each other's cache
 const db = initializeFirestore(app, {
-  localCache: persistentLocalCache({ 
-    tabManager: persistentMultipleTabManager() 
+  localCache: persistentLocalCache({
+    tabManager: persistentMultipleTabManager()
   })
 });
 

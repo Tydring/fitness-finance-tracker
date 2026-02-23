@@ -108,6 +108,7 @@ export function mapNotionToTransaction(page) {
     category: getPropSelect(p['Category']),
     category_group: getPropSelect(p['Type']),
     payment_method: getPropSelect(p['Payment Method']),
+    account: getPropSelect(p['Account']),
     notes: getPropRichText(p['Notes']),
     notion_page_id: page.id,
     notion_last_edited: page.last_edited_time,
@@ -135,6 +136,8 @@ export function mapTransactionToNotion(firestoreId, data) {
   if (data.payment_method) props['Payment Method'] = select(data.payment_method);
   if (data.notes) props['Notes'] = richText(data.notes);
   if (data.source) props['Source'] = select(data.source);
+  if (data.account) props['Account'] = select(data.account);
+  if (data.currency) props['Currency'] = select(data.currency);
 
   return props;
 }

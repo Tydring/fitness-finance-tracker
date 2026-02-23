@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
     collection,
     addDoc,
@@ -10,10 +10,10 @@ import {
     limit,
     where,
     onSnapshot,
-    serverTimestamp,
-    Timestamp
+    serverTimestamp
 } from 'firebase/firestore';
 import { db, auth } from '../config/firebase';
+import { useAuth } from './useAuth';
 
 /**
  * Generic Firestore hook for CRUD operations on a collection.
@@ -24,7 +24,20 @@ export const useFirestoreCollection = (collectionName, queryConstraints = [], ma
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // Use a ref to track the query constraints to avoid unnecessary re-subscriptions
+    // JSON.stringify is a simple way to deep compare array of constraints (mapped to strings mostly)
+    // but Firestore query objects are complex. 
+    // Instead, we will rely on the caller to memoize queryConstraints, 
+    // OR just use a simple dependency check if we trust the caller.
+    // For now, let's assume the caller will memoize or we use the JSON string of constraints as a key.
+    const queryKey = JSON.stringify(queryConstraints.map(c => c.toString()));
+
     useEffect(() => {
+        if (!queryConstraints) {
+            setLoading(false);
+            return;
+        }
+
         const colRef = collection(db, collectionName);
         const q = query(colRef, ...queryConstraints, limit(maxItems));
 
@@ -47,7 +60,7 @@ export const useFirestoreCollection = (collectionName, queryConstraints = [], ma
         );
 
         return unsubscribe;
-    }, [collectionName, maxItems]);
+    }, [collectionName, maxItems, queryKey, queryConstraints]); // Re-run when query definition changes
 
     const addItem = useCallback(async (item) => {
         const colRef = collection(db, collectionName);
@@ -91,12 +104,14 @@ export const useFirestoreCollection = (collectionName, queryConstraints = [], ma
  * Filters by current user's userId.
  */
 export const useWorkouts = (maxItems = 50) => {
-    const uid = auth.currentUser?.uid;
-    return useFirestoreCollection(
-        'workouts',
-        uid ? [where('userId', '==', uid), orderBy('date', 'desc')] : [orderBy('date', 'desc')],
-        maxItems
-    );
+    const { user } = useAuth();
+
+    const queryConstraints = useMemo(() => {
+        if (!user) return null; // Return null instead of fallback to prevent premature query
+        return [where('userId', '==', user.uid), orderBy('date', 'desc')];
+    }, [user]);
+
+    return useFirestoreCollection('workouts', queryConstraints, maxItems);
 };
 
 /**
@@ -104,10 +119,12 @@ export const useWorkouts = (maxItems = 50) => {
  * Filters by current user's userId.
  */
 export const useTransactions = (maxItems = 50) => {
-    const uid = auth.currentUser?.uid;
-    return useFirestoreCollection(
-        'transactions',
-        uid ? [where('userId', '==', uid), orderBy('date', 'desc')] : [orderBy('date', 'desc')],
-        maxItems
-    );
+    const { user } = useAuth();
+
+    const queryConstraints = useMemo(() => {
+        if (!user) return null; // Return null instead of fallback to prevent premature query
+        return [where('userId', '==', user.uid), orderBy('date', 'desc')];
+    }, [user]);
+
+    return useFirestoreCollection('transactions', queryConstraints, maxItems);
 };

@@ -1,0 +1,146 @@
+.calculator-page {
+    padding: 1.5rem;
+    padding-top: env(safe-area-inset-top, 1.5rem);
+    padding-bottom: 6rem;
+    /* Space for bottom nav */
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-height: 100vh;
+}
+
+.page-header {
+    margin-bottom: 0.5rem;
+}
+
+.calc-card {
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+}
+
+.input-label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.calc-input-wrapper {
+    display: flex;
+    gap: 0.75rem;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    padding: 0.5rem;
+    align-items: center;
+}
+
+.calc-main-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #f8fafc;
+    font-size: 2.5rem;
+    font-weight: 800;
+    padding: 0.5rem 1rem;
+    outline: none;
+    width: 60%;
+    box-shadow: none;
+}
+
+.calc-main-input:focus {
+    box-shadow: none;
+    background: transparent;
+}
+
+.calc-main-input::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.calc-currency-select {
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: #a5b4fc;
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: auto;
+    box-shadow: none;
+}
+
+.calc-currency-select:focus {
+    border-color: #818cf8;
+    box-shadow: none;
+    background: rgba(99, 102, 241, 0.25);
+}
+
+.calc-currency-select option {
+    background: #1e293b;
+    color: #f8fafc;
+}
+
+.calc-results-section {
+    margin-top: 2rem;
+}
+
+.results-title {
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+}
+
+.results-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.result-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-radius: 1rem;
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.3) 100%);
+}
+
+.result-label {
+    color: #cbd5e1;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.result-value {
+    color: #f8fafc;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.01em;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

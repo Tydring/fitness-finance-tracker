@@ -8,24 +8,37 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      workbox: {
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
+      },
+      includeAssets: ['favicon.png', 'apple-touch-icon.png'],
       manifest: {
         name: 'Fitness & Finance Tracker',
         short_name: 'FitFin',
         description: 'Track workouts and finances with Notion sync',
-        theme_color: '#ffffff',
+
         icons: [
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
             src: 'pwa-512x512.png',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           }
-        ]
+        ],
+        id: '/',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        background_color: '#ffffff',
+        theme_color: '#ffffff'
       }
     })
   ],
