@@ -1,6 +1,7 @@
 import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { onRequest } from 'firebase-functions/v2/https';
 import { getFirestore, Timestamp, FieldValue } from 'firebase-admin/firestore';
+import { requireAuthToken } from '../shared/authMiddleware.js';
 
 const COLLECTION = 'weekly_summaries';
 
@@ -204,6 +205,8 @@ export const aggregateWeeklyData = onSchedule(
 export const manualAggregateWeeklyData = onRequest(
     { cors: true },
     async (req, res) => {
+        const decoded = await requireAuthToken(req, res);
+        if (!decoded) return;
         try {
             const { weekKey, workoutCount, transactionCount } = await runAggregation();
             res.json({ ok: true, weekKey, workoutCount, transactionCount });

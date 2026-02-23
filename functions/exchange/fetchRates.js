@@ -4,6 +4,7 @@ import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { fetchBcvRates } from './bcvScraper.js';
 import { fetchBinanceP2PRate } from './binanceFetcher.js';
+import { requireAuthToken } from '../shared/authMiddleware.js';
 
 const COLLECTION = 'exchange_rates';
 const scraperApiKey = defineSecret('SCRAPER_API_KEY');
@@ -89,6 +90,8 @@ export const scheduledFetchRates = onSchedule(
 export const manualFetchRates = onRequest(
     { cors: true, secrets: [scraperApiKey] },
     async (req, res) => {
+        const decoded = await requireAuthToken(req, res);
+        if (!decoded) return;
         try {
             const { today, ratesDoc } = await writeRates();
             res.json({

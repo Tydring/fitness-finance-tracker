@@ -13,6 +13,7 @@ import {
 import { db } from "../../config/firebase";
 import { useWorkouts } from "../../hooks/useFirestore";
 import { useUserStats } from "../../context/UserStatsContext";
+import { useAuth } from "../../hooks/useAuth";
 import {
   EXERCISE_CATEGORY_MAP,
   isStrengthExercise,
@@ -51,6 +52,7 @@ const WorkoutForm = () => {
   const navigate = useNavigate();
   const { addItem, updateItem } = useWorkouts();
   const { updateWorkoutCompleted } = useUserStats();
+  const { user } = useAuth();
 
   const editId = searchParams.get("edit");
 
@@ -146,6 +148,7 @@ const WorkoutForm = () => {
     try {
       const q = query(
         collection(db, "workouts"),
+        where("userId", "==", user.uid),
         where("exercise", "==", currentExercise),
         orderBy("date", "desc"),
         limit(1),

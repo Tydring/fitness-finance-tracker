@@ -2,6 +2,7 @@ import { onSchedule } from 'firebase-functions/v2/scheduler';
 import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import { requireAuthToken } from '../shared/authMiddleware.js';
 
 const anthropicKey = defineSecret('CLAUDE_API_KEY');
 const SUMMARIES_COLLECTION = 'weekly_summaries';
@@ -171,6 +172,8 @@ export const generateWeeklyInsights = onSchedule(
 export const manualGenerateInsights = onRequest(
     { cors: true, secrets: [anthropicKey] },
     async (req, res) => {
+        const decoded = await requireAuthToken(req, res);
+        if (!decoded) return;
         try {
             const force = req.query.force === 'true';
             const apiKey = anthropicKey.value();

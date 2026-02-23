@@ -8,12 +8,14 @@ import {
   getNotionClient,
 } from './client.js';
 import { runWorkoutPoll, runTransactionPoll } from './pollHelpers.js';
+import { requireCallAuth } from '../shared/authMiddleware.js';
 
 export const manualSync = onCall(
   {
     secrets: [NOTION_API_KEY, NOTION_WORKOUTS_DB_ID, NOTION_TRANSACTIONS_DB_ID],
   },
-  async () => {
+  async (request) => {
+    requireCallAuth(request);
     const db = getFirestore();
     const notion = getNotionClient();
 

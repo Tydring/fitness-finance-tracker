@@ -1,34 +1,43 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Single user app &mdash; lock to your UID
-    // Replace 'YOUR_FIREBASE_UID' with your actual UID after login or use request.auth.uid check
-    // For now, we allow any authenticated user to read/write their OWN data
-    
+
     match /workouts/{docId} {
-      // Allow if userId matches OR if document has no userId (legacy docs)
-      allow read, write: if request.auth != null
-        && (resource.data.userId == request.auth.uid || !('userId' in resource.data));
-      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
     }
-    
+
     match /transactions/{docId} {
-      allow read, write: if request.auth != null;
+      allow read, update, delete: if request.auth != null
+        && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
     }
-    
+
     match /exchange_rates/{docId} {
       allow read: if request.auth != null;
       allow write: if false; // Only Cloud Functions
     }
-    
+
     match /sync_meta/{docId} {
       allow read: if request.auth != null;
       allow write: if false; // Only Cloud Functions
     }
 
     match /users/{userId} {
-      // Users can only read/write their own stats document
       allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /weekly_summaries/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /weekly_insights/{docId} {
+      allow read: if request.auth != null;
+      allow write: if false;
     }
   }
 }

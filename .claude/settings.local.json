@@ -18,7 +18,12 @@
       "Bash(printf:*)",
       "Bash(npm show:*)",
       "Bash(git -C \"C:\\\\Users\\\\Christian\\\\.gemini\\\\antigravity\\\\scratch\\\\fitness-finance-tracker\" status)",
-      "Bash(python -m json.tool:*)"
+      "Bash(python -m json.tool:*)",
+      "Bash(git)",
+      "Bash(cd \"C:\\\\Users\\\\Christian\\\\.gemini\\\\antigravity\\\\scratch\\\\fitness-finance-tracker\" && npm audit fix 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Christian\\\\.gemini\\\\antigravity\\\\scratch\\\\fitness-finance-tracker\" && npm audit fix --prefix functions 2>&1)",
+      "Bash(cd \"C:\\\\Users\\\\Christian\\\\.gemini\\\\antigravity\\\\scratch\\\\fitness-finance-tracker\" && npm audit fix --force 2>&1)",
+      "Bash(tail:*)"
     ]
   }
 }
